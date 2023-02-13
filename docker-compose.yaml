@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+
+    database:
+        image: mongo
+        container_name: mongodb
+        ports:
+            - 27017:27017
+        volumes:
+            - /usr/todo_app_mongodb:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=rootuser
+            - MONGO_INITDB_ROOT_PASSWORD=rootpass
+        networks:
+            - app-network
+
+    backend:
+      build:
+        context: ./
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      depends_on:
+        - database
+      container_name: backend
+      networks:
+        - app-network
+
+networks:
+  app-network:
+    driver: bridge
