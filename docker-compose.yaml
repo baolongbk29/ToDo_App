@@ -14,17 +14,34 @@ services:
         networks:
             - app-network
 
+    jenkins:
+      image: jenkins/jenkins:lts
+      container_name: jenkins
+      privileged: true
+      ports:
+        - "8080:8080"
+      volumes:
+        - /usr/jenkins:/var/jenkins_home
+        - /var/run/docker.sock:/var/run/docker.sock
+      user: 0:0
+
     backend:
       build:
         context: ./
         dockerfile: Dockerfile
+
       ports:
-        - "8080:8080"
+        - "8000:8000"
+
       depends_on:
+
         - database
+        - jenkins
+
       container_name: backend
       networks:
         - app-network
+
 
 networks:
   app-network:
